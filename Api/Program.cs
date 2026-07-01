@@ -32,6 +32,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    await InitializeDatabaseAsync(app);
 }
 
 app.UseHttpsRedirection();
@@ -41,3 +42,11 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+static async Task InitializeDatabaseAsync(WebApplication app)
+{
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    await DbInitializer.InitializeAsync(context);
+}

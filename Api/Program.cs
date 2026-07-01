@@ -12,7 +12,10 @@ var connectionString = builder.Configuration.GetConnectionString("bd")
     ?? throw new InvalidOperationException("Connection string 'bd' was not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString, sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure();
+    }));
 
 builder.Services.AddMediatR(config =>
 {
@@ -29,13 +32,16 @@ builder.Services.AddOpenApi();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
 {
     app.MapOpenApi();
     await InitializeDatabaseAsync(app);
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsEnvironment("Testing"))
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthorization();
 
@@ -49,4 +55,9 @@ static async Task InitializeDatabaseAsync(WebApplication app)
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
     await DbInitializer.InitializeAsync(context);
+}
+
+namespace Api
+{
+    public partial class Program { }
 }

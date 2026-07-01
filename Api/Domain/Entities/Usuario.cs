@@ -22,4 +22,11 @@ public sealed class Usuario : Entity<UsuarioId>
     public string Apellido { get; private set; } = string.Empty;
 
     public Email Email { get; private set; }
+
+    public void Actualizar(string nombre, string apellido, Email email)
+    {
+        Nombre = nombre.Trim();
+        Apellido = apellido.Trim();
+        Email = email;
+    }
 }

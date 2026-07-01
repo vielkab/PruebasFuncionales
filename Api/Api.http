@@ -1,6 +1,12 @@
 @Api_HostAddress = http://localhost:5239
+@UsuarioId = 780b4754-2353-43f2-8114-ac6ddf2217f5
 
-GET {{Api_HostAddress}}/weatherforecast/
+GET {{Api_HostAddress}}/api/usuarios?pageNumber=1&pageSize=5
+Accept: application/json
+
+###
+
+GET {{Api_HostAddress}}/api/usuarios/{{UsuarioId}}
 Accept: application/json
 
 ###
